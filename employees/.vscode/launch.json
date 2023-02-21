@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "employees-config1",
-      "cwd": "${workspaceFolder}/employees",
+      "cwd": "${workspaceFolder}",
       "runtimeArgs": [
         "fiori",
         "run"
@@ -22,7 +22,33 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "env": {
-        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"/V2\",\"destination\":\"Northwind\"},{\"path\":\"/sap\",\"destination\":\"logaligroupERP\"}]",
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/logali/employees\"}",
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"/sap\",\"destination\":\"Northwind\"}]"
+      }
+    },
+    {
+      "name": "employees-config2",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "args": [
+        "--open",
+        "index.html"
+      ],
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"destination\":\"logaligroupERP\",\"path\":\"/sap\"},{\"destination\":\"Northwind\",\"path\":\"/V2\"}]",
         "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
         "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/logali/employees\"}",
         "FIORI_TOOLS_UI5_VERSION": "1.110.1",
@@ -30,8 +56,8 @@
       }
     },
     {
-      "name": "employees-config2",
-      "cwd": "${workspaceFolder}/employees",
+      "name": "employees-config3",
+      "cwd": "${workspaceFolder}",
       "runtimeArgs": [
         "fiori",
         "run"
@@ -51,7 +77,7 @@
       "outputCapture": "std",
       "env": {
         "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/logali/employees\"}",
-        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"destination\":\"Northwind\",\"path\":\"/V2\"},{\"path\":\"/sap\",\"destination\":\"logaligroupERP\"}]",
+        "FIORI_TOOLS_BACKEND_CONFIG": "[{\"destination\":\"logaligroupERP\",\"path\":\"/sap\"},{\"destination\":\"Northwind\",\"path\":\"/V2\"}]",
         "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false"
       }
     }
