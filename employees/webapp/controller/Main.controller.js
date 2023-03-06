@@ -1,8 +1,9 @@
 sap.ui.define(
   [
-    "sap/ui/core/mvc/Controller"
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageBox"
   ],
-  function (Controller) {
+  function (Controller, MessageBox) {
 
     return Controller.extend("logaligroup.employees.controller.Main", {
 
@@ -46,7 +47,7 @@ sap.ui.define(
           "',EmployeeId='" + data.EmployeeId + "')", {
             success: function(){
               this.onReadODataIncidence.bind(this)(data.EmployeeId);
-              sap.m.MessageToast.show(oResourceBundle.getTex("odataDeleteOK"));
+              sap.m.MessageToast.show(oResourceBundle.getText("odataDeleteOK"));
             }.bind(this),
             error: function(e){
               sap.m.MessageToast.show(oResourceBundle.getText("odataDeleteKO"));
@@ -64,6 +65,7 @@ sap.ui.define(
         var incidenceModel = new sap.ui.model.json.JSONModel([]);
         detailView.setModel(incidenceModel, "incidenceModel");
         detailView.byId("tableIncidence").removeAllContent();
+        
         this.onReadODataIncidence(this._detailEmployeeView.getBindingContext("odataNorthwind").getObject().EmployeeID);
       },
 
@@ -85,17 +87,18 @@ sap.ui.define(
           this.getView().getModel("incidenceModel").create("/IncidentsSet", body, {
             success: function () {
               this.onReadODataIncidence.bind(this)(employeeId);
-              sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
+              MessageBox.success(oResourceBundle.getText("odataSaveOK"));
+              //sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
             }.bind(this),
             error: function (e) {
               sap.m.MessageToast.show(oResourceBundle.getText("odataSaveKO"));
             }.bind(this)
           })
         }else if(incidenceModel[data.incidenceRow].CreationDateX || 
-                 incidenceModel[data.incidenceRow].ReasonX       ||
-                 incidenceModel[data.incidenceRow].TypeX ){
+                 incidenceModel[data.incidenceRow].ReasonX  ||
+                 incidenceModel[data.incidenceRow].TypeX ) {
                   
-             var body={
+             var body = {
               CreationDate: incidenceModel[data.incidenceRow].CreationDate,
               CreationDateX: incidenceModel[data.incidenceRow].CreationDateX,
               Type:  incidenceModel[data.incidenceRow].Type,
@@ -104,15 +107,15 @@ sap.ui.define(
               ReasonX: incidenceModel[data.incidenceRow].ReasonX
              };     
 
-             this.getView().getModel("incidenceModel").update("/IncidenceSet(IncidenceId='" + 
+             this.getView().getModel("incidenceModel").update("/IncidentsSet(IncidenceId='" + 
              incidenceModel[data.incidenceRow].IncidenceId + "',SapId='" + incidenceModel[data.incidenceRow].SapId +
-             ",'EmployeeId='" + incidenceModel[data.incidenceRow].EmployeeId + "')", body, {
+             "',EmployeeId='" + incidenceModel[data.incidenceRow].EmployeeId + "')", body, {
                
-              success: function(){
+              success: function () {
                 this.onReadODataIncidence.bind(this)(employeeId);
-                sap.m.MessageToast.show(oResourceBundle.getTex("odataUpdateOK"));
+                sap.m.MessageToast.show(oResourceBundle.getText("odataUpdateOK"));
               }.bind(this),
-              error: function(e){
+              error: function (e) {
                 sap.m.MessageToast.show(oResourceBundle.getText("odataUpdateKO"));
               }.bind(this)
              });
@@ -123,36 +126,33 @@ sap.ui.define(
       },
 
       onReadODataIncidence: function(employeeID){
+
         this.getView().getModel("incidenceModel").read("/IncidentsSet", {
 
           filters:[
-            new sap.ui.model.Filter("SapId","EQ",this.getOwnerComponent().SapId),
-            new sap.ui.model.Filter("EmployeeId","EQ",employeeID.toString())
+            new sap.ui.model.Filter("SapId", "EQ", this.getOwnerComponent().SapId),
+            new sap.ui.model.Filter("EmployeeId", "EQ", employeeID.toString())
           ],
-          success: function(data) {
-            var incidenceModel = this._detailEmployeeView.getModel("incidenceModel");
+          success: function (data) {
 
+            var incidenceModel = this._detailEmployeeView.getModel("incidenceModel");
             incidenceModel.setData(data.results);
             var tableIncidence = this._detailEmployeeView.byId("tableIncidence");
-
             tableIncidence.removeAllContent();
 
             for(var incidence in data.results){
-              var newIncidence = sap.ui.xmlfragment("logaligroup.employees.fragment.NewIncidence", this._detailEmployeeView.getController());
-
-              this._detailEmployeeView.addDependent(new Incidence);
+              data.results[incidence]._ValidateDate = true;
+              data.results[incidence].EnabledSave = false;
+            
+              var newIncidence = sap.ui.xmlfragment("logaligroup.employees.view.fragment.NewIncidence", this._detailEmployeeView.getController());
+              this._detailEmployeeView.addDependent(newIncidence);
               newIncidence.bindElement("incidenceModel>/" + incidence);
-
               tableIncidence.addContent(newIncidence);
-            }
-
+              }
           }.bind(this),
           error: function(e){
-
           }
-          
         });
       }
-
     });
   });
